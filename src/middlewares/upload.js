@@ -22,4 +22,4 @@ module.exports = multer({
     }
     cb(undefined, true);
   },
-}).single('avatar');
+}).single('profileImage');
