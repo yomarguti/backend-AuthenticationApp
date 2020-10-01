@@ -10,6 +10,7 @@ const signupUser = async (req, res) => {
 
     res.status(200).send({ user, token });
   } catch (error) {
+    console.log('error:', error);
     res.status(400).send({ error });
   }
 };
@@ -56,9 +57,23 @@ const getProfile = (req, res) => {
   res.status(200).send({ user: req.user });
 };
 
+const uploadAvatar = async (req, res) => {
+  try {
+    const filePath = `${req.file.destination}/${req.file.filename}`;
+
+    req.user.profileImage = filePath;
+
+    await req.user.save();
+    res.status(200).send({ user: req.user });
+  } catch (error) {
+    req.status(400).send({ error: 'Unable to save the image to database' });
+  }
+};
+
 module.exports = {
   signupUser,
   updateUser,
   loginUser,
   getProfile,
+  uploadAvatar,
 };

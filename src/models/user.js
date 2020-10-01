@@ -16,20 +16,19 @@ const User = sequelize.define(
     },
     name: {
       type: Sequelize.STRING,
+      defaultValue: '',
       allowNull: true,
     },
 
     bio: {
       type: Sequelize.STRING,
+      defaultValue: '',
       allowNull: true,
     },
     phone: {
       type: Sequelize.STRING,
       allowNull: true,
-      validate: {
-        isNumeric: true,
-        len: [10],
-      },
+      defaultValue: '',
     },
     email: {
       type: Sequelize.STRING,
@@ -45,6 +44,10 @@ const User = sequelize.define(
       validate: {
         len: [6, 250],
       },
+    },
+    profileImage: {
+      type: Sequelize.STRING,
+      allowNull: true,
     },
   },
   {
