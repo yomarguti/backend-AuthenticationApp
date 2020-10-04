@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const path = require('path');
 
 const signupUser = async (req, res) => {
   try {
@@ -34,7 +35,6 @@ const getProfile = (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  console.log('req:', req.body);
   try {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['bio', 'name', 'password', 'phone', 'email', 'profileImage'];
@@ -43,11 +43,10 @@ const updateUser = async (req, res) => {
     if (!isValidOperation) {
       return res.status(400).send({ error: 'Invalid update' });
     }
-    if (updates.includes('profileImage')) {
-    }
+
     updates.forEach((update) => {
       if (update === 'profileImage') {
-        req.user.profileImage = `${req.file.destination}/${req.file.filename}`;
+        req.user.profileImage = `${req.file.filename}`;
       } else {
         req.user[update] = req.body[update];
       }
@@ -58,6 +57,17 @@ const updateUser = async (req, res) => {
   } catch (error) {
     console.log('error:', error);
     req.status(400).send({ error: 'Unable to save the image to database' });
+  }
+};
+
+const getAvatar = (req, res) => {
+  try {
+    const url = path.join(__dirname, `../../${req.user.profileImage}`);
+    res.set('content-type', 'image/jpeg');
+    res.status(200).sendFile(url);
+  } catch (error) {
+    console.log('error:', error);
+    req.status(400).send({ error: 'Unable to retrieve avatar' });
   }
 };
 
@@ -72,4 +82,5 @@ module.exports = {
   loginUser,
   getProfile,
   errorManager,
+  getAvatar,
 };

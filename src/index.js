@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const path = require('path');
 
 const db = require('./db/index');
 require('./db/config');
@@ -17,6 +18,9 @@ const userRoute = require('./routes/user');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
+
+//Static
+app.use('/users/me/avatar', express.static(path.join(__dirname, `../avatars`)));
 
 //Routes
 app.use('/api', userRoute);
