@@ -7,7 +7,6 @@ const signupUser = async (req, res) => {
 
     const user = await User.create({ password, email });
     const token = await user.generateAuthToken();
-    await user.createToken({ encoded: token });
 
     res.status(200).send({ user, token });
   } catch (error) {
@@ -21,7 +20,6 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findByEmail(email, password);
     const token = await user.generateAuthToken();
-    await user.createToken({ encoded: token });
 
     res.status(200).send({ user, token });
   } catch (error) {
@@ -37,7 +35,7 @@ const getProfile = (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['bio', 'name', 'password', 'phone', 'email', 'profileImage'];
+    const allowedUpdates = ['bio', 'name', 'password', 'phone', 'email', 'profileImage', 'avatar'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidOperation) {
@@ -45,7 +43,7 @@ const updateUser = async (req, res) => {
     }
 
     updates.forEach((update) => {
-      if (update === 'profileImage') {
+      if (update === 'avatar') {
         req.user.profileImage = `${req.file.filename}`;
       } else {
         req.user[update] = req.body[update];
@@ -53,7 +51,10 @@ const updateUser = async (req, res) => {
     });
 
     await req.user.save();
-    res.status(200).send({ user: req.user });
+
+    const { password, ...user } = req.user;
+
+    res.status(200).send({ user });
   } catch (error) {
     console.log('error:', error);
     req.status(400).send({ error: 'Unable to save the image to database' });
@@ -76,6 +77,11 @@ const errorManager = (error, req, res, next) => {
   res.status(400).send({ error: error.message });
 };
 
+const getAuth = async (req, res) => {
+  const token = await req.user.generateAuthToken();
+  res.redirect(`http://localhost:3000/me/${token}`);
+};
+
 module.exports = {
   signupUser,
   updateUser,
@@ -83,4 +89,5 @@ module.exports = {
   getProfile,
   errorManager,
   getAvatar,
+  getAuth,
 };

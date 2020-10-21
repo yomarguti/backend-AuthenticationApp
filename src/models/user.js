@@ -40,7 +40,7 @@ const User = sequelize.define(
     },
     password: {
       type: Sequelize.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         len: [6, 250],
       },
@@ -48,6 +48,9 @@ const User = sequelize.define(
     profileImage: {
       type: Sequelize.STRING,
       allowNull: true,
+    },
+    provider: {
+      type: Sequelize.STRING,
     },
   },
   {
