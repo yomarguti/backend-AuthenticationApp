@@ -79,7 +79,7 @@ const errorManager = (error, req, res, next) => {
 
 const getAuth = async (req, res) => {
   const token = await req.user.generateAuthToken();
-  res.redirect(`http://localhost:3000/me/${token}`);
+  res.redirect(`${process.env.REDIRECT_URL}/me/${token}`);
 };
 
 module.exports = {
