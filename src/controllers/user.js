@@ -52,7 +52,7 @@ const updateUser = async (req, res) => {
 
     await req.user.save();
 
-    const { password, ...user } = req.user;
+    const { password, ...user } = req.user.get({ plain: true });
 
     res.status(200).send({ user });
   } catch (error) {
