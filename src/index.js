@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const path = require('path');
+const fs = require('fs');
 const passport = require('./config/passport');
 
 const db = require('./db/index');
@@ -21,8 +22,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 
+const avatar_dir = path.join(__dirname, `../avatars`);
+
+if (!fs.existsSync(avatar_dir)) fs.mkdirSync(avatar_dir);
+
 //Static
-app.use('/users/me/avatar', express.static(path.join(__dirname, `../avatars`)));
+app.use('/users/me/avatar', express.static(avatar_dir));
 
 //Routes append /api
 app.use(passportRoutes);
